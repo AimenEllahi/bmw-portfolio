@@ -9,7 +9,7 @@ import PlayCircleOutlinedIcon from '@mui/icons-material/PlayCircleOutlined';
 import { getPresentationProjects } from '@/lib/data';
 import type { Project } from '@/lib/data';
 import { useIsMobile } from '@/lib/useIsMobile';
-import { NAVBAR_OFFSET } from '@/lib/overlayLayout';
+import { NAVBAR_OFFSET, BOTTOM_NAV_OFFSET } from '@/lib/overlayLayout';
 import ProjectEmbedModal from './ProjectEmbedModal';
 
 const CARD_W = 220;
@@ -32,7 +32,11 @@ function hasLivePreview(project: Project): boolean {
   return Boolean(url && url !== 'YOUR_DEPLOYED_URL');
 }
 
-function getEmbedSrc(project: Project): string | null {
+function canEmbedPreview(project: Project): boolean {
+  return hasLivePreview(project) && !project.embedBlocked;
+}
+
+function getPreviewUrl(project: Project): string | null {
   const url = project.embedUrl ?? project.demoUrl;
   if (!url || url === 'YOUR_DEPLOYED_URL') return null;
   return url;
@@ -40,6 +44,10 @@ function getEmbedSrc(project: Project): string | null {
 
 function getCardMotion(offset: number, cardSpacing: number) {
   const abs = Math.abs(offset);
+  // Center card stays flat so iframe previews render correctly
+  if (offset === 0) {
+    return { x: 0, scale: 1, rotateY: 0, z: 0, opacity: 1 };
+  }
   return {
     x: offset * cardSpacing,
     scale: Math.max(0.68, 1 - abs * 0.11),
@@ -49,70 +57,45 @@ function getCardMotion(offset: number, cardSpacing: number) {
   };
 }
 
-function CardPoster({ project }: { project: Project }) {
+function CardPreview({ project, isCenter }: { project: Project; isCenter: boolean }) {
+  const [ready, setReady] = useState(false);
+  const previewUrl = getPreviewUrl(project);
+  const showIframe = isCenter && canEmbedPreview(project);
   const gradient =
     PROJECT_GRADIENTS[project.title] ??
     'linear-gradient(160deg, #0d1117 0%, #1C3557 50%, #0a0e14 100%)';
+
+  useEffect(() => {
+    setReady(false);
+    if (!showIframe) return;
+    const timer = window.setTimeout(() => setReady(true), 200);
+    return () => window.clearTimeout(timer);
+  }, [showIframe, previewUrl]);
 
   return (
     <Box
       sx={{
         height: PREVIEW_H,
         flexShrink: 0,
+        position: 'relative',
+        overflow: 'hidden',
         background: gradient,
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}
-    />
-  );
-}
-
-/** Flat layer — iframes break inside 3D-transformed parents. */
-function CenterLivePreview({ project }: { project: Project }) {
-  const [loadIframe, setLoadIframe] = useState(false);
-  const embedSrc = getEmbedSrc(project);
-
-  useEffect(() => {
-    setLoadIframe(false);
-    if (!embedSrc) return;
-    const timer = window.setTimeout(() => setLoadIframe(true), 400);
-    return () => window.clearTimeout(timer);
-  }, [embedSrc, project.title]);
-
-  if (!embedSrc) return null;
-
-  return (
-    <Box
-      sx={{
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        width: CARD_W,
-        height: PREVIEW_H,
-        marginLeft: -CARD_W / 2,
-        marginTop: -CARD_H / 2,
-        zIndex: 50,
-        borderRadius: '14px 14px 0 0',
-        overflow: 'hidden',
-        pointerEvents: 'none',
-        border: '1px solid rgba(29, 111, 164, 0.45)',
-        borderBottom: 'none',
-        background: '#0a0e14',
-        boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.2)',
-      }}
     >
-      {loadIframe ? (
+      {showIframe && ready && previewUrl ? (
         <iframe
-          src={embedSrc}
-          title={`${project.title} live preview`}
-          loading="lazy"
-          tabIndex={-1}
+          key={previewUrl}
+          src={previewUrl}
+          title={`${project.title} preview`}
+          allow="fullscreen"
           style={{
             position: 'absolute',
             top: 0,
             left: 0,
-            width: '1280px',
-            height: '800px',
-            transform: `scale(${CARD_W / 1280})`,
+            width: `${CARD_W * 2}px`,
+            height: `${PREVIEW_H * 2}px`,
+            transform: 'scale(0.5)',
             transformOrigin: 'top left',
             border: 'none',
             pointerEvents: 'none',
@@ -122,15 +105,29 @@ function CenterLivePreview({ project }: { project: Project }) {
       ) : (
         <Box
           sx={{
-            height: '100%',
+            position: 'absolute',
+            inset: 0,
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
+            gap: 0.5,
+            px: 1,
           }}
         >
-          <Typography sx={{ color: 'rgba(255,255,255,0.4)', fontSize: '10px' }}>
-            Loading preview…
-          </Typography>
+          {isCenter && project.embedBlocked && (
+            <Typography sx={{ color: 'rgba(255,255,255,0.5)', fontSize: '9px', textAlign: 'center' }}>
+              Tap to open live site
+            </Typography>
+          )}
+          {isCenter && showIframe && !ready && (
+            <Typography sx={{ color: 'rgba(255,255,255,0.4)', fontSize: '9px' }}>
+              Loading…
+            </Typography>
+          )}
+          {!isCenter && (
+            <PlayCircleOutlinedIcon sx={{ fontSize: 16, color: 'rgba(255,255,255,0.2)' }} />
+          )}
         </Box>
       )}
     </Box>
@@ -177,8 +174,8 @@ function CoverflowCard({
         height: CARD_H,
         marginLeft: -CARD_W / 2,
         marginTop: -CARD_H / 2,
-        transformStyle: 'preserve-3d',
-        transformPerspective: 1200,
+        transformStyle: isCenter ? 'flat' : 'preserve-3d',
+        transformPerspective: isCenter ? undefined : 1200,
         cursor: 'pointer',
         pointerEvents: abs > 2 ? 'none' : 'auto',
         zIndex: 10 - abs,
@@ -218,17 +215,7 @@ function CoverflowCard({
         }}
       >
         {/* Side cards only — center top is handled by flat preview layer */}
-        {!isCenter && <CardPoster project={project} />}
-        {isCenter && (
-          <Box
-            sx={{
-              height: PREVIEW_H,
-              flexShrink: 0,
-              background: 'rgba(10, 14, 20, 0.35)',
-              borderBottom: '1px solid rgba(255,255,255,0.06)',
-            }}
-          />
-        )}
+        <CardPreview project={project} isCenter={isCenter} />
 
         <Box
           sx={{
@@ -334,8 +321,6 @@ function Panel3() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [embedProject, setEmbedProject] = useState<Project | null>(null);
 
-  const activeProject = projects[activeIndex];
-
   const goTo = (index: number) => setActiveIndex(index);
   const goNext = () => {
     if (activeIndex < projects.length - 1) goTo(activeIndex + 1);
@@ -387,16 +372,18 @@ function Panel3() {
           </Typography>
         </Box>
 
-        {/* Carousel — viewport-centered, independent of header */}
+        {/* Carousel — centered without CSS transform on wrapper (fixes iframe rendering) */}
         <Box
           sx={{
             position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -46%)',
-            width: '100%',
-            maxWidth: 920,
-            px: { xs: 4, md: 8 },
+            top: NAVBAR_OFFSET,
+            bottom: BOTTOM_NAV_OFFSET,
+            left: 0,
+            right: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
             zIndex: 2,
             pointerEvents: 'none',
           }}
@@ -405,7 +392,9 @@ function Panel3() {
             sx={{
               position: 'relative',
               width: '100%',
+              maxWidth: 920,
               height: { xs: 360, md: 400 },
+              px: { xs: 4, md: 8 },
               pointerEvents: 'auto',
             }}
           >
@@ -433,8 +422,6 @@ function Panel3() {
                 );
               })}
             </Box>
-
-            <CenterLivePreview project={activeProject} />
 
             <IconButton
               aria-label="Previous project"

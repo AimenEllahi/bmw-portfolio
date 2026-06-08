@@ -85,6 +85,8 @@ export interface Project {
   isDemo?: boolean;
   demoUrl?: string;
   embedUrl?: string;
+  /** Site sends X-Frame-Options / CSP that blocks iframe embed — open in new tab instead. */
+  embedBlocked?: boolean;
   githubUrl?: string;
 }
 
@@ -123,6 +125,7 @@ export const projects: Project[] = [
     category: 'Full Stack',
     demoUrl: 'https://dndai.app/',
     embedUrl: 'https://dndai.app/',
+    embedBlocked: true,
   },
   {
     title: 'Landau Boat Configurator',
