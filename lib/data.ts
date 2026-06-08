@@ -1,3 +1,13 @@
+export const education = [
+  {
+    degree: 'MSc Media Informatics',
+    school: 'Saarland University',
+    location: 'Saarbrücken, Germany',
+    period: '2024 – Present',
+    current: true,
+  },
+];
+
 export const skills = {
   frontend: [
     { name: 'TypeScript', percentage: 95 },
@@ -40,16 +50,16 @@ export const experiences = [
     period: 'Jun 2025 – Nov 2025',
     location: 'Walldorf, Germany',
     tags: ['JavaScript', 'Agile', 'Enterprise'],
-    description: 'Engineered JavaScript automation scripts improving application reliability in one of the worlds largest enterprise software environments. Learned that enterprise software has its own laws of physics.',
+    description: 'Engineered JavaScript automation scripts improving application reliability in one of the worlds largest enterprise software environments.',
     current: false,
   },
   {
     company: 'DNDAI',
-    role: 'Lead Frontend Engineer',
+    role: 'Frontend Engineer',
     period: 'Jan 2024 – Oct 2024',
     location: 'Graz, Austria (Remote)',
-    tags: ['Next.js', 'TypeScript', 'Team Lead'],
-    description: 'Led frontend for an AI platform serving 10,000+ users. Architected a reusable component system that improved performance by 20%.',
+    tags: ['Next.js', 'TypeScript', 'React'],
+    description: 'Handled all frontend for an AI platform serving 10,000+ users. Built the component system and shipped every user-facing screen.',
     current: false,
   },
   {
@@ -63,44 +73,92 @@ export const experiences = [
   },
 ];
 
-export const projects = [
+export interface Project {
+  title: string;
+  subtitle?: string;
+  description: string;
+  tags: string[];
+  category: string;
+  featured?: boolean;
+  interviewBuilt?: boolean;
+  pinned?: boolean;
+  isDemo?: boolean;
+  demoUrl?: string;
+  embedUrl?: string;
+  githubUrl?: string;
+}
+
+/** Cell Tracker and other pinned projects always appear first in the slider. */
+export function getPresentationProjects(): Project[] {
+  return [...projects].sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    if (a.interviewBuilt && !b.interviewBuilt) return -1;
+    if (!a.interviewBuilt && b.interviewBuilt) return 1;
+    if (a.featured && !b.featured) return -1;
+    if (!a.featured && b.featured) return 1;
+    return 0;
+  });
+}
+
+export const projects: Project[] = [
   {
     title: 'Cell Inventory & Traceability Tracker',
     subtitle: 'Built for BMW Battery Cell Competence Center',
-    description: 'Full-stack battery cell lifecycle management system. Tracks cells from Received to Disposed with complete immutable audit trail, row-level CSV validation, and real-time dashboard.',
+    description: 'Full-stack battery cell lifecycle management with immutable audit trail, CSV validation, and real-time dashboard.',
     tags: ['React', 'Node.js', 'MySQL', 'Express', 'MUI'],
+    category: 'Full Stack',
     featured: true,
-    demoUrl: 'YOUR_DEPLOYED_URL',
+    interviewBuilt: true,
+    pinned: true,
+    demoUrl: 'https://bmw-cell-tracker.vercel.app/',
+    embedUrl: 'https://bmw-cell-tracker.vercel.app/',
     githubUrl: 'https://github.com/AimenEllahi/cell-tracker',
-    highlights: [
-      'Immutable audit trail for every state change',
-      'Row-level CSV import error reporting',
-      'State machine with lifecycle enforcement',
-      'Real-time dashboard with charts',
-    ],
-  },
-  {
-    title: 'Xiaomi 3D Product Showcase',
-    subtitle: 'Interactive 3D product visualization',
-    description: 'Optimized 3D product rendering in Next.js with Three.js. Focused on SEO performance and smooth interactions.',
-    tags: ['Next.js', 'Three.js', 'TypeScript'],
-    featured: false,
-    githubUrl: 'https://github.com/AimenEllahi',
-  },
-  {
-    title: 'Landau Boat Configurator',
-    subtitle: 'Real-time 3D customization tool',
-    description: 'Built a real-time boat customization tool with immersive UX and clean state management.',
-    tags: ['Next.js', 'TypeScript', 'Tailwind'],
-    featured: false,
-    githubUrl: 'https://github.com/AimenEllahi',
   },
   {
     title: 'DNDAI Platform',
-    subtitle: 'AI-integrated portal for 10,000+ users',
-    description: 'Scalable backend and frontend handling high traffic for an AI-integrated portal.',
+    subtitle: 'AI-powered gameplay platform',
+    description: 'Handled all frontend for a live AI platform scaling gameplay sessions for 10,000+ active users worldwide.',
     tags: ['Next.js', 'Node.js', 'MongoDB'],
-    featured: false,
-    githubUrl: 'https://github.com/AimenEllahi',
+    category: 'Full Stack',
+    demoUrl: 'https://dndai.app/',
+    embedUrl: 'https://dndai.app/',
+  },
+  {
+    title: 'Landau Boat Configurator',
+    subtitle: 'Real-time 3D customization',
+    description: 'Real-time boat configurator with water shading, part swapping, and polished UX — built for Landau Alure.',
+    tags: ['R3F', 'Next.js', 'Tailwind'],
+    category: '3D UX',
+    demoUrl: 'https://landau-alure-232.vercel.app/Island',
+    embedUrl: 'https://landau-alure-232.vercel.app/Island',
+  },
+  {
+    title: 'Xiaomi 3D Showcase',
+    subtitle: 'Interactive product visualization',
+    description: 'Product storytelling with real-time WebGL, scroll-driven animations, and SEO-optimized Next.js architecture.',
+    tags: ['Three.js', 'Next.js', 'GSAP'],
+    category: '3D Web',
+    demoUrl: 'https://o16u.vercel.app/',
+    embedUrl: 'https://o16u.vercel.app/',
+  },
+  {
+    title: 'Car Configurator Demo',
+    subtitle: 'Configure your drive',
+    description: 'In-browser 3D car configurator — pick a part, swap a finish, see it instantly. Built into my portfolio.',
+    tags: ['R3F', 'Next.js', 'Three.js'],
+    category: '3D Demo',
+    isDemo: true,
+    demoUrl: 'https://aimen-qaiser.vercel.app/configurator',
+    embedUrl: 'https://aimen-qaiser.vercel.app/configurator',
+  },
+  {
+    title: 'TaskBoard Pro',
+    subtitle: 'Sprint management dashboard',
+    description: 'Sprint dashboards, filters, and responsive task grids for agile team workflows.',
+    tags: ['Angular', 'Tailwind'],
+    category: 'Frontend',
+    demoUrl: 'https://angular-project-ashy.vercel.app/dashboard',
+    embedUrl: 'https://angular-project-ashy.vercel.app/dashboard',
   },
 ];

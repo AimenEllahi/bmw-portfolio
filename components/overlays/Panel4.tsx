@@ -5,7 +5,7 @@ import { Box, Typography, Button } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { NAVBAR_OFFSET, overlayScrollable } from '@/lib/overlayLayout';
+import { NAVBAR_OFFSET, BOTTOM_NAV_OFFSET, overlayScrollable } from '@/lib/overlayLayout';
 
 const contactItems = [
   { Icon: EmailIcon, value: 'aimenqaiser@example.com' },
@@ -21,7 +21,7 @@ function Panel4() {
         left: '50%',
         top: NAVBAR_OFFSET,
         transform: 'translateX(-50%)',
-        pb: '100px',
+        pb: BOTTOM_NAV_OFFSET,
         maxWidth: { xs: '92%', md: 600 },
         width: '100%',
         textAlign: 'center',
@@ -66,37 +66,9 @@ function Panel4() {
         remarkable.
       </Typography>
 
-      <Typography sx={{ color: '#9AA5B4', fontSize: '15px', mb: 3 }}>
+      <Typography sx={{ color: '#9AA5B4', fontSize: '15px', mb: 4 }}>
         Available for BMW IT Internship
       </Typography>
-
-      <Box
-        sx={{
-          background: 'rgba(13, 17, 23, 0.85)',
-          backdropFilter: 'blur(10px)',
-          borderLeft: '3px solid #1D6FA4',
-          borderRadius: '0 8px 8px 0',
-          px: 2.5,
-          py: 2,
-          mb: 3,
-          textAlign: 'left',
-        }}
-      >
-        <Typography sx={{ color: '#1D6FA4', fontSize: '11px', fontWeight: 600, mb: 0.5 }}>
-          IEEE Published — HITE 2025
-        </Typography>
-        <Typography
-          sx={{
-            color: '#E0E0E0',
-            fontSize: '13px',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          AI-Driven Analysis Framework for Human-Computer Interaction Studies
-        </Typography>
-      </Box>
 
       <Box
         sx={{

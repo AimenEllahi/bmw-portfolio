@@ -2,39 +2,8 @@
 
 import { memo } from 'react';
 import { Box, Typography } from '@mui/material';
-
-const experiences = [
-  {
-    company: 'Think3DDD',
-    role: '3D Software Intern',
-    period: 'Mar 2026–Present',
-    description: 'Building 3D medical visualization platform',
-    current: true,
-  },
-  {
-    company: 'SAP',
-    role: 'JS Developer',
-    period: 'Jun–Nov 2025',
-    description: 'Enterprise JavaScript automation at scale',
-    current: false,
-  },
-  {
-    company: 'DNDAI',
-    role: 'Lead Frontend',
-    period: 'Jan–Oct 2024',
-    description: 'Led frontend for 10,000+ user AI platform',
-    current: false,
-  },
-  {
-    company: 'Freelance',
-    role: '50+ Projects',
-    period: '2022–2023',
-    description: 'Full-stack TypeScript across 50+ shipped projects',
-    current: false,
-  },
-];
-
-import { NAVBAR_OFFSET, overlayScrollable } from '@/lib/overlayLayout';
+import { experiences } from '@/lib/data';
+import { NAVBAR_OFFSET, BOTTOM_NAV_OFFSET, overlayScrollable } from '@/lib/overlayLayout';
 
 function Panel2() {
   return (
@@ -44,6 +13,7 @@ function Panel2() {
         right: { xs: '4%', md: '5%' },
         left: { xs: '4%', md: 'auto' },
         top: NAVBAR_OFFSET,
+        pb: BOTTOM_NAV_OFFSET,
         maxWidth: { xs: '92%', md: 420 },
         pointerEvents: 'auto',
         ...overlayScrollable,
@@ -137,6 +107,29 @@ function Panel2() {
           </Typography>
         </Box>
       ))}
+
+      <Box
+        sx={{
+          background: 'rgba(13, 17, 23, 0.85)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          borderLeft: '3px solid #1D6FA4',
+          px: 2.25,
+          py: 1.75,
+          mt: 0.5,
+          borderRadius: '0 8px 8px 0',
+        }}
+      >
+        <Typography sx={{ color: '#1D6FA4', fontSize: '11px', fontWeight: 600, mb: 0.5 }}>
+          IEEE Published — HITE 2025
+        </Typography>
+        <Typography sx={{ color: '#FFFFFF', fontWeight: 700, fontSize: '13px', mb: 0.5 }}>
+          Research
+        </Typography>
+        <Typography sx={{ color: '#9AA5B4', fontSize: '11px', lineHeight: 1.5 }}>
+          AI-Driven Analysis Framework for Human-Computer Interaction Studies
+        </Typography>
+      </Box>
     </Box>
   );
 }

@@ -2,20 +2,17 @@
 
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { Box, Typography, Chip } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { NAVBAR_OFFSET, BOTTOM_NAV_OFFSET } from '@/lib/overlayLayout';
 
 const skills = [
-  { name: 'TypeScript', percentage: 95 },
-  { name: 'React', percentage: 92 },
-  { name: 'Next.js', percentage: 90 },
+  { name: 'React', percentage: 94 },
+  { name: 'Next.js', percentage: 91 },
   { name: 'Three.js', percentage: 80 },
-  { name: 'Node.js', percentage: 85 },
-  { name: 'MySQL', percentage: 78 },
+  { name: 'Node.js', percentage: 82 },
+  { name: 'TypeScript', percentage: 55 },
+  { name: 'MySQL', percentage: 75 },
 ];
-
-const techPills = ['TypeScript', 'React', 'Next.js', 'Node.js', 'MySQL', 'Three.js', 'Docker'];
-
-import { NAVBAR_OFFSET, overlayScrollable } from '@/lib/overlayLayout';
 
 function Panel1() {
   return (
@@ -23,10 +20,14 @@ function Panel1() {
       sx={{
         position: 'absolute',
         left: { xs: '4%', md: '5%' },
-        top: NAVBAR_OFFSET,
-        maxWidth: { xs: '92%', md: 420 },
+        top: { xs: NAVBAR_OFFSET, md: '50%' },
+        transform: { md: 'translateY(-50%)' },
+        width: { xs: '92%', md: 400 },
+        maxWidth: 400,
+        maxHeight: { xs: 'calc(100vh - 196px)', md: 'calc(100vh - 180px)' },
         pointerEvents: 'auto',
-        ...overlayScrollable,
+        overflow: 'hidden',
+        pb: { xs: BOTTOM_NAV_OFFSET.xs, md: 0 },
       }}
     >
       <Typography
@@ -35,7 +36,7 @@ function Panel1() {
           fontSize: '11px',
           letterSpacing: '4px',
           textTransform: 'uppercase',
-          mb: 1.5,
+          mb: 1,
         }}
       >
         01 / SKILLS
@@ -46,83 +47,74 @@ function Panel1() {
         sx={{
           fontFamily: 'Space Grotesk, sans-serif',
           fontWeight: 700,
-          fontSize: 'clamp(28px, 4vw, 40px)',
+          fontSize: 'clamp(26px, 3.5vw, 36px)',
           color: '#FFFFFF',
-          mb: 1,
+          mb: 0.5,
+          lineHeight: 1.1,
         }}
       >
         What&apos;s Under the Hood
       </Typography>
 
-      <Typography sx={{ color: '#9AA5B4', fontSize: '14px', mb: 3 }}>
+      <Typography sx={{ color: '#9AA5B4', fontSize: '13px', mb: 2 }}>
         Every good car needs the right engine.
       </Typography>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 3 }}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+          gap: 1,
+        }}
+      >
         {skills.map((skill, index) => (
           <Box
             key={skill.name}
-            className="glass"
             sx={{
-              background: 'rgba(13, 17, 23, 0.8)',
+              background: 'rgba(13, 17, 23, 0.88)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
-              border: '1px solid rgba(29, 111, 164, 0.3)',
+              border: '1px solid rgba(29, 111, 164, 0.25)',
               borderRadius: '8px',
-              px: 2.5,
-              py: 2,
+              px: 1.75,
+              py: 1.25,
             }}
           >
             <Box
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                mb: 1,
+                alignItems: 'center',
+                mb: 0.75,
               }}
             >
-              <Typography sx={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 500 }}>
+              <Typography sx={{ color: '#FFFFFF', fontSize: '13px', fontWeight: 500 }}>
                 {skill.name}
               </Typography>
-              <Typography sx={{ color: '#1D6FA4', fontSize: '14px', fontWeight: 700 }}>
+              <Typography sx={{ color: '#1D6FA4', fontSize: '12px', fontWeight: 700 }}>
                 {skill.percentage}%
               </Typography>
             </Box>
             <Box
               sx={{
-                height: '5px',
+                height: '4px',
                 backgroundColor: '#1C3557',
-                borderRadius: '3px',
+                borderRadius: '2px',
                 overflow: 'hidden',
               }}
             >
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${skill.percentage}%` }}
-                transition={{ duration: 1, delay: index * 0.08, ease: 'easeOut' }}
+                transition={{ duration: 0.9, delay: index * 0.06, ease: 'easeOut' }}
                 style={{
                   height: '100%',
                   backgroundColor: '#1D6FA4',
-                  borderRadius: '3px',
+                  borderRadius: '2px',
                 }}
               />
             </Box>
           </Box>
-        ))}
-      </Box>
-
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-        {techPills.map((tech) => (
-          <Chip
-            key={tech}
-            label={tech}
-            size="small"
-            variant="outlined"
-            sx={{
-              borderColor: '#1C3557',
-              color: '#9AA5B4',
-              fontSize: '11px',
-            }}
-          />
         ))}
       </Box>
     </Box>

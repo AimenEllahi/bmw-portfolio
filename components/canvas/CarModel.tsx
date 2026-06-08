@@ -18,22 +18,23 @@ interface CameraKeyframe {
   progress: number;
 }
 
+// Keyframes align to panel snap points (0, 0.2, 0.4, 0.6, 0.8) — max panel is 4, so 1.0 is never reached.
 const desktopKeyframes: CameraKeyframe[] = [
-  { position: [0, 2, 10], target: [0, 0.45, 0], progress: 0 },
-  { position: [0, 2.2, 11.5], target: [0, 0.45, 0], progress: 0.2 },
-  { position: [6, 2, 8.5], target: [0, 0.5, 0], progress: 0.4 },
-  { position: [-6.5, 1.8, 6.5], target: [-0.25, 0.55, 0], progress: 0.6 },
-  { position: [5, 3.5, 10], target: [0, 0.45, 0], progress: 0.8 },
-  { position: [0, 2.5, -8.5], target: [0, 0.55, -0.3], progress: 1 },
+  { position: [0, 2, 10], target: [0, 0.45, 0], progress: 0 }, // Intro — front
+  { position: [-4.5, 1.7, 8], target: [0, 0.48, 0.4], progress: 0.2 }, // Skills — front-left ¾
+  { position: [7.5, 2, 3], target: [0, 0.5, 0], progress: 0.4 }, // Experience — right profile
+  { position: [-5.5, 2.3, -7], target: [0, 0.52, -0.6], progress: 0.6 }, // Projects — rear-left ¾
+  { position: [0, 2.8, -9.5], target: [0, 0.55, -1.2], progress: 0.8 }, // Contact — straight rear
+  { position: [0, 2.8, -9.5], target: [0, 0.55, -1.2], progress: 1 },
 ];
 
 const mobileKeyframes: CameraKeyframe[] = [
   { position: [0, 2, 9.5], target: [0, 0.45, 0], progress: 0 },
-  { position: [0, 2, 10.5], target: [0, 0.45, 0], progress: 0.2 },
-  { position: [5, 1.8, 7.5], target: [0, 0.5, 0], progress: 0.4 },
-  { position: [-5.5, 1.6, 6], target: [-0.25, 0.55, 0], progress: 0.6 },
-  { position: [4, 3, 9], target: [0, 0.45, 0], progress: 0.8 },
-  { position: [0, 2.2, -7.5], target: [0, 0.55, -0.3], progress: 1 },
+  { position: [-4, 1.6, 7.5], target: [0, 0.48, 0.35], progress: 0.2 },
+  { position: [6.5, 1.8, 2.5], target: [0, 0.5, 0], progress: 0.4 },
+  { position: [-5, 2, -6], target: [0, 0.52, -0.5], progress: 0.6 },
+  { position: [0, 2.4, -8], target: [0, 0.55, -1], progress: 0.8 },
+  { position: [0, 2.4, -8], target: [0, 0.55, -1], progress: 1 },
 ];
 
 function findKeyframes(keyframes: CameraKeyframe[], progress: number) {

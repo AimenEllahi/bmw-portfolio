@@ -3,11 +3,13 @@
 import { memo, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Box, Typography } from '@mui/material';
+import SchoolIcon from '@mui/icons-material/School';
+import { education } from '@/lib/data';
+import { NAVBAR_OFFSET, BOTTOM_NAV_OFFSET } from '@/lib/overlayLayout';
 
 const titles = [
-  'Full-Stack TypeScript Developer',
+  'Frontend Developer with Backend Know-how',
   'Three.js & React Engineer',
-  'MSc @ Saarland University',
   'Your Next BMW Intern 🚀',
 ];
 
@@ -30,14 +32,14 @@ function Panel0() {
         alignItems: 'center',
         pointerEvents: 'none',
         px: { xs: 3, md: 6 },
-        pt: { xs: '88px', md: '96px' },
-        pb: { xs: '110px', md: '120px' },
+        pt: NAVBAR_OFFSET,
+        pb: BOTTOM_NAV_OFFSET,
       }}
     >
       <Box
         sx={{
           pointerEvents: 'auto',
-          maxWidth: { xs: '100%', md: 440 },
+          maxWidth: { xs: '100%', md: 460 },
           width: '100%',
           p: { xs: 2.5, md: 3.5 },
           borderRadius: '12px',
@@ -73,7 +75,7 @@ function Panel0() {
           Aimen Qaiser
         </Typography>
 
-        <Box sx={{ minHeight: 28, mb: 1.5 }}>
+        <Box sx={{ minHeight: 28, mb: 2 }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={titleIndex}
@@ -87,6 +89,46 @@ function Panel0() {
               </Typography>
             </motion.div>
           </AnimatePresence>
+        </Box>
+
+        <Box
+          sx={{
+            background: 'rgba(13, 17, 23, 0.85)',
+            borderLeft: '3px solid #1D6FA4',
+            borderRadius: '0 8px 8px 0',
+            px: 2,
+            py: 1.5,
+            mb: 2,
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+            <SchoolIcon sx={{ color: '#1D6FA4', fontSize: 16 }} />
+            <Typography
+              sx={{
+                color: '#1D6FA4',
+                fontSize: '10px',
+                letterSpacing: '2px',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+              }}
+            >
+              Education
+            </Typography>
+          </Box>
+          {education.map((edu) => (
+            <Box key={edu.school}>
+              <Typography sx={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 600 }}>
+                {edu.degree}
+              </Typography>
+              <Typography sx={{ color: '#9AA5B4', fontSize: '12px', mt: 0.25 }}>
+                {edu.school} · {edu.location}
+              </Typography>
+              <Typography sx={{ color: '#1D6FA4', fontSize: '11px', mt: 0.25 }}>
+                {edu.period}
+                {edu.current && ' · Current'}
+              </Typography>
+            </Box>
+          ))}
         </Box>
 
         <Typography

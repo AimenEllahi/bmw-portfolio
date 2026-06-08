@@ -1,13 +1,15 @@
 'use client';
 
+import { useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import { MotionValue } from 'framer-motion';
 import * as THREE from 'three';
-import { smoothstep } from '@/lib/scroll';
+import { getShowroomLighting } from '@/lib/showroomLighting';
 import CarModel from './CarModel';
 import Showroom from './Showroom';
 import Lights from './Lights';
+import SpinningLight from './SpinningLight';
 
 interface SceneProps {
   scrollProgress: MotionValue<number>;
@@ -15,17 +17,15 @@ interface SceneProps {
 
 function EnvironmentController({ scrollProgress }: { scrollProgress: MotionValue<number> }) {
   const { scene } = useThree();
+  const smoothedEnv = useRef(0.22);
 
   useFrame(() => {
-    const progress = scrollProgress.get();
-    scene.environmentIntensity = THREE.MathUtils.lerp(
-      0.25,
-      0.85,
-      smoothstep(Math.min(progress / 0.22, 1)),
-    );
+    const target = getShowroomLighting(scrollProgress.get()).envIntensity;
+    smoothedEnv.current = THREE.MathUtils.lerp(smoothedEnv.current, target, 0.16);
+    scene.environmentIntensity = smoothedEnv.current;
   });
 
-  return <Environment preset="studio" environmentIntensity={0.25} />;
+  return <Environment preset="studio" environmentIntensity={0.22} />;
 }
 
 export default function Scene({ scrollProgress }: SceneProps) {
@@ -45,7 +45,8 @@ export default function Scene({ scrollProgress }: SceneProps) {
         <fog attach="fog" args={['#06080d', 22, 48]} />
         <EnvironmentController scrollProgress={scrollProgress} />
         <Lights scrollProgress={scrollProgress} />
-        <Showroom />
+        <SpinningLight />
+        <Showroom scrollProgress={scrollProgress} />
         <CarModel scrollProgress={scrollProgress} />
       </Canvas>
     </div>
